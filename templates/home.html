@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <style>
+        <link rel="stylesheet" href="{{ url_for('static', filename='mystyle.css') }}" />
+        body {background-color: #DFDCE3;}  
+    </style>
+    
+    <title>Word Search Puzzle Solver</title>
+    </head>
+    <body>
+        <div class="rectangle_1">
+          <h1>WORD SEARCH PUZZLE SOLVER</h1>
+        </div>
+ 
+        <div class="rectangle_2">
+          <form action="upload" method="post" enctype="multipart/form-data">
+          <label for="file_photo">Only <div class="rectangle_3">.jpg</div> and <div class="rectangle_3">.png</div> extension files are supported.</label><br><br><br><br>
+          <input type="file" name="file_photo" id="file_photo"><hr>
+          <input type="submit" value="Submit">
+          </form>
+        </div>
+
+    </body>
+</html>
