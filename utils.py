@@ -71,29 +71,29 @@ def get_dir_dict():
             "top_left" : (-1,-1),
             "top" : (-1,0),
             "top_right" : (-1,1)}
+
+
+def gen_color():
+    color = list(np.random.random(size=3) * 256)
+    return color
+
     
-     
 def highlight_contours(image, answers, contour_map, rows):
-    
     dir_dict = get_dir_dict()
     for key in answers:
+        color = gen_color()
         num_contours = len(key)
         dir_index  = dir_dict[answers[key][1]] 
         curr_index = answers[key][0]
-        net_index = rows * curr_index[0] + curr_index[1]
-        cur_cnt = contour_map[net_index]
-        x,y,w,h = cv2.boundingRect(cur_cnt)
-        cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), -1)
-     
-        for i in range(num_contours-1):
-            
-            curr_index = tuple(map(sum, zip(curr_index, dir_index)))
+        for i in range(num_contours):
             net_index = rows * curr_index[0] + curr_index[1]
             cur_cnt = contour_map[net_index]
+            overlay = image.copy()
             x,y,w,h = cv2.boundingRect(cur_cnt)
-            cv2.rectangle(image, (x,y), (x+w,y+h), (0,255,0), -1)
-
-        
+            cv2.rectangle(image, (x,y), (x+w,y+h), color, -1)
+            image = cv2.addWeighted(overlay, 0.4, image, 0.6, 0) 
+            curr_index = tuple(map(sum, zip(curr_index, dir_index)))
+     
     return image
 
 

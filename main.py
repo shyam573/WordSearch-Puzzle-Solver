@@ -27,11 +27,6 @@ first, second = n_largestcontours(contours,num=2)
 target_words_img = get_cropped_image(input_image, second)
 target_words = wordsfromimage(target_words_img, config=r'--psm 3 --oem 3')
 
-colors = []
-for i in range(len(target_words)):
-    color = tuple(np.random.choice(range(256), size=3))
-    colors.append(color)
-
 ### get puzzle words
 puzzle_img = get_cropped_image(input_image, first)
 puzzle_contours = find_contours(puzzle_img, close=False)
