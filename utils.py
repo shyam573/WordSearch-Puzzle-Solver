@@ -15,8 +15,7 @@ import itertools
 def read_image(imagepath):
     image = cv2.imread(imagepath)
     if len(image.shape) != 2:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)    
     return image
     
 
@@ -27,7 +26,6 @@ def find_contours(image, close=True):
     rect_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (18, 18))
     dilation = cv2.dilate(thresh, rect_kernel, iterations=1)
     contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)     
-    
     return contours
 
 
@@ -36,22 +34,19 @@ def n_largestcontours(contours, num=2):
     areas_sorted = sorted(range(len(areas)), key=lambda x: areas[x])
     largest_indices = areas_sorted[-num:]
     largest_cnts = [contours[i] for i in largest_indices][::-1]
-    
     return largest_cnts
 
 
 def get_cropped_image(image, contour):
     x, y, w, h = cv2.boundingRect(contour)
     cropped_image = image[y:y + h, x:x + w] 
-    
     return cropped_image
 
 
 def wordsfromimage(image, config):
     text = pytesseract.image_to_string(image, config=config)
-    words = text.split("\n")
+    words = set(text.replace(" ", "").split("\n"))
     words = [word.upper() for word in words if word.isalpha()]
-    
     return words
 
 
@@ -62,7 +57,6 @@ def get_pzlwords(detections, shape):
     return puzzle_words
 
 def get_dir_dict():
-    
     return {"right" : (0,1),
             "right_down" : (1,1),
             "down" : (1,0),
@@ -80,11 +74,12 @@ def gen_color():
     
 def highlight_contours(image, answers, contour_map, rows):
     dir_dict = get_dir_dict()
-    for key in answers:
+    for ind, each in answers.iterrows():
+        key = each["word"]
         color = gen_color()
         num_contours = len(key)
-        dir_index  = dir_dict[answers[key][1]] 
-        curr_index = answers[key][0]
+        dir_index  = dir_dict[each["direction"]] 
+        curr_index = (each["row"], each["col"])
         for i in range(num_contours):
             net_index = rows * curr_index[0] + curr_index[1]
             cur_cnt = contour_map[net_index]
